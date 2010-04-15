@@ -22,7 +22,7 @@ namespace Life
 
         public void Init()
         {
-            int size = 200;
+            int size = 500;
             population = new Population(size);
             pictureBox1.Image = population.GetCurrentImage();
         }
@@ -46,6 +46,11 @@ namespace Life
                 timer1.Stop();
                 startStopButton.Text = "start";
             }
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            timer1.Interval = (trackBar1.Maximum + 1 - trackBar1.Value) * 100;
         }
     }
 }
