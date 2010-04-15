@@ -17,7 +17,6 @@ namespace Life
         {
             InitializeComponent();
             Init();
-            
         }
 
         public void Init()
@@ -29,13 +28,24 @@ namespace Life
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            NextState();
+        }
+
+        private void NextState()
+        {
             population.NextState();
+            RefreshImage();
+        }
+
+        private void RefreshImage()
+        {
             pictureBox1.Image = population.GetCurrentImage();
             pictureBox1.Refresh();
         }
 
         private void startStopButton_Click(object sender, EventArgs e)
         {
+            toolStripButton1.Enabled = !startStopButton.Checked;
             if (startStopButton.Checked)
             {
                 timer1.Start();
@@ -51,6 +61,11 @@ namespace Life
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
             timer1.Interval = (trackBar1.Maximum + 1 - trackBar1.Value) * 100;
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            NextState();
         }
     }
 }
