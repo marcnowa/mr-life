@@ -23,7 +23,7 @@ namespace Life
         {
             int size = 500;
             population = new Population(size);
-            pictureBox1.Image = population.GetCurrentImage();
+            RefreshImage();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -39,7 +39,7 @@ namespace Life
 
         private void RefreshImage()
         {
-            pictureBox1.Image = population.GetCurrentImage();
+            pictureBox1.Image = population.GetCurrentImage(trackBar2.Value+1, new Point(0,0));
             pictureBox1.Refresh();
         }
 
@@ -66,6 +66,11 @@ namespace Life
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             NextState();
+        }
+
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            RefreshImage();
         }
     }
 }

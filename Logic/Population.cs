@@ -39,19 +39,19 @@ namespace Life.Logic
             }
         }
 
-        private Color GetColor(Cell cell)
+        private Brush GetBrush(Cell cell)
         {
             switch (cell)
             {
                 case Cell.Dead:
-                    return Color.White;
+                    return Brushes.White;
                 case Cell.Alive:
-                    return Color.Black;
+                    return Brushes.Black;
                 case Cell.Reproducing:
-                    return Color.Red;
+                    return Brushes.Red;
 
                 default:
-                    return Color.White;
+                    return Brushes.White;
             }
         }
 
@@ -64,15 +64,26 @@ namespace Life.Logic
 
         public Bitmap GetCurrentImage()
         {
+            return GetCurrentImage(1, new Point(0, 0));
+        }
+
+        public Bitmap GetCurrentImage(int cellSize, Point upperLeftCorner)
+        {
             Bitmap bmp = new Bitmap(mapSize, mapSize);
-            for (int i = 0; i < mapSize; i++)
+            Graphics gbmp = Graphics.FromImage(bmp);
+            int size = mapSize / cellSize;
+
+            for (int i = upperLeftCorner.X; i < size+upperLeftCorner.X; i++)
             {
-                for (int j = 0; j < mapSize; j++)
+                for (int j = upperLeftCorner.Y; j < size+upperLeftCorner.Y; j++)
                 {
-                    Color color = GetColor(map[i, j]);
-                    bmp.SetPixel(i, j, color);
+                    
+                    Brush b = GetBrush(map[i, j]);
+                    
+                    gbmp.FillRectangle(b, new Rectangle(i*cellSize, j*cellSize, cellSize, cellSize));
                 }
             }
+
             return bmp;
         }
     }
