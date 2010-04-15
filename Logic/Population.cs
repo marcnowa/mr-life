@@ -10,23 +10,53 @@ namespace Life.Logic
     {
         Dead,
         Alive,
-        Reproducing
+        Born
     }
 
     public class Population
     {
         private Cell[,] map;
+        private Cell[,] tmpMap;
+        private Cell[,] unActiveMap;
         private int mapSize;
         private Random randomGenerator;
-
+        private ISimulationLogic simulationLogic;
         public Population(int mapSize)
         {
             map = new Cell[mapSize, mapSize];
+            unActiveMap = new Cell[mapSize, mapSize];
             this.mapSize = mapSize;
             randomGenerator = new Random();
+            simulationLogic = new Coral(mapSize, mapSize, Neighbourhood.Moors);
+//            RandomState();
+            CenterState();
 
-            RandomState();
         }
+
+
+        private void CenterState()
+        {
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    map[i, j] = Cell.Dead;
+                }
+            }
+
+
+            int delta = 200;
+            int _modi = 1;
+            int _modj = 2;
+            for (int i = mapSize/2 - delta; i < mapSize/2 + delta; i++)
+            {
+                for (int j = mapSize/2 - delta; j < mapSize/2 + delta; j++)
+                {
+                    if ((i % _modi) == 0 && (j % _modj) ==0) map[i, j] = Cell.Born;
+                }
+            }
+        }
+
 
         private void RandomState()
         {
@@ -34,7 +64,20 @@ namespace Life.Logic
             {
                 for (int j = 0; j < mapSize; j++)
                 {
-                    map[i, j] = (Cell)randomGenerator.Next(3);
+                    map[i, j] = (Cell)randomGenerator.Next(2);
+                }
+            }
+        }
+
+
+
+        private void getNextState()
+        {
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    unActiveMap[i, j] = simulationLogic.cellNextState(map, i, j);
                 }
             }
         }
@@ -47,7 +90,7 @@ namespace Life.Logic
                     return Brushes.White;
                 case Cell.Alive:
                     return Brushes.Black;
-                case Cell.Reproducing:
+                case Cell.Born:
                     return Brushes.Red;
 
                 default:
@@ -59,7 +102,11 @@ namespace Life.Logic
 
         public void NextState()
         {
-            RandomState();
+            getNextState();
+
+            tmpMap = map;
+            map = unActiveMap;
+            unActiveMap = tmpMap;
         }
 
         public Bitmap GetCurrentImage()
